@@ -11,12 +11,11 @@ public class InterfaceGraphique extends JComponent {
 
   public InterfaceGraphique(){
     setDoubleBuffered(false);
-    grafikse.drawLine();
   }
 
   protected void paintComponent(Graphics g){
     if(this.image == null){
-      this.image = Image.createImage(getSize().width, getSize().height);
+      this.image = createImage(getSize().width, getSize().height);
       this.grafikse = (Graphics2D) this.image.getGraphics();
       this.grafikse.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       clear();

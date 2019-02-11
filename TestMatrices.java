@@ -15,11 +15,15 @@ public class TestMatrices{
   public static void main(String args[]){
     Matrices tests = new Matrices();
     tests.readVect();
+    //a tester : fonction multiplication vect
     tests.affMat(Matrices.listevecteurs);
     JFrame frame = new JFrame("3D Vectors");
+    frame.setSize(600, 600);
+    frame.setVisible(true);
     Container content = frame.getContentPane();
     content.setLayout(new BorderLayout());
     final InterfaceGraphique ig = new InterfaceGraphique();
-    content.add(ie, BorderLayout.CENTER);
+    content.add(ig, BorderLayout.CENTER);
+
   }
 }

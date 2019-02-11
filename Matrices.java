@@ -19,28 +19,45 @@ public class Matrices{
 	public Matrices(){
 		this.init();
 	}
+
 	public void init(){
 		this.readVect();
 	}
+
 	public void Rotx(double angle){
 		this.rx = new double[][] { {1,0,0}, {0, Math.cos(angle), -Math.sin(angle)}, {0, -Math.sin(angle), Math.cos(angle)} };
+		for(int i = 0; i < listevecteurs.length; i++){
+			matmulv(this.rx,this.listevecteurs[i]);
+		}
 	}
+
 	public void Roty(double angle){
 		this.ry = new double[][] { {Math.cos(angle),0,Math.sin(angle)}, {0, 1, 0}, {-Math.sin(angle), 0,  Math.cos(angle)} };
+		for(int i = 0; i < listevecteurs.length; i++){
+			matmulv(this.ry,this.listevecteurs[i]);
+		}
 	}
+
 	public void Rotz(double angle){
 		this.rz = new double[][] { {Math.cos(angle),-Math.sin(angle),0}, {Math.sin(angle),Math.cos(angle),0}, {0, 0, 1} };
+		for(int i = 0; i < listevecteurs.length; i++){
+			matmulv(this.rz,this.listevecteurs[i]);
+		}
 	}
-	public void translateX(double depl, int vecteur){
+
+	public void translateX(double depl, double[][] vecteur){
 		this.matTransla3d[0][3] = depl;
+		matmul(this.matTransla3d,vecteur);
 		this.matTransla3d[0][3] = 0;
 	}
-	public void translateY(double depl, int vecteur){
+	public void translateY(double depl, double[][] vecteur){
 		this.matTransla3d[1][3] = depl;
+		matmul(this.matTransla3d,vecteur);
 		this.matTransla3d[1][3] = 0;
 	}
-	public void translateZ(double depl, int vecteur){
+	public void translateZ(double depl, double[][] vecteur){
 		this.matTransla3d[2][3] = depl;
+		matmul(this.matTransla3d,vecteur);
 		this.matTransla3d[2][3] = 0;
 	}
 	public void affMat(double[][] matrice) {
@@ -155,5 +172,25 @@ public class Matrices{
 		}
 		return res;
 	}
+
+	public double[][] matmulv(double[][] mat1, double vect[]){
+		int y1,x2;
+		y1 = mat1.length;
+		x2 = vect.length;
+		double[][] res = new double[y1][x2];
+		double temp;
+		if(y1 == x2){
+			for(int i = 0; i < x2; i++){
+				for(int j = 0; j < y1; j++){
+					for(int k = 0; k < x2; k++){
+						res[i][j] += mat1[i][k] * vect[k];
+					}
+				}
+			}
+		}
+		return res;
+	}
 }
+
+
 //}[] matricemul =
