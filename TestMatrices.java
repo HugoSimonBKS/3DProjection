@@ -16,7 +16,7 @@ public class TestMatrices{
     Matrices tests = new Matrices();
     tests.readVect();
     //a tester : fonction multiplication vect
-    tests.affMat(Matrices.listevecteurs);
+    tests.affMat(tests.listevecteurs);
     JFrame frame = new JFrame("3D Vectors");
     frame.setSize(600, 600);
     frame.setVisible(true);

@@ -4,11 +4,12 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import javax.swing.JComponent;
+import java.awt.geom.Line2D;
 public class InterfaceGraphique extends JComponent {
   private Image image;
   private Graphics2D grafikse;
   private int currentx, currenty, oldx, oldy;
-
+  private Matrices mat = new Matrices();
   public InterfaceGraphique(){
     setDoubleBuffered(false);
   }
@@ -22,6 +23,10 @@ public class InterfaceGraphique extends JComponent {
     }
 
     g.drawImage(this.image,0,0,null);
+
+    for(int i = 0; i < 8; i++){
+      grafikse.draw(new Line2D.Double(mat.getPointX(i),mat.getPointy(i),mat.getPointX(i),mat.getPointy(i)));
+    }
   }
 
   public void clear(){
