@@ -22,8 +22,16 @@ public class TestMatrices{
     frame.setVisible(true);
     Container content = frame.getContentPane();
     content.setLayout(new BorderLayout());
-    final InterfaceGraphique ig = new InterfaceGraphique();
+    final InterfaceGraphique ig = new InterfaceGraphique(tests);
     content.add(ig, BorderLayout.CENTER);
-
+    while(true){
+      try{
+        Thread.sleep(1000/60);
+        ig.clear();
+      }
+      catch(Exception e){
+        System.out.println(e);
+      }
+    }
   }
 }

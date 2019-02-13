@@ -9,12 +9,12 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 public class Matrices{
-	public static double[][] rx;
-	public static double[][] ry;
-	public static double[][] rz;
-	public static double[][] matProj = new double [2][3];
-	public static double[][] matTransla3d = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
-	public static double[][] listevecteurs;
+	public double[][] rx;
+	public double[][] ry;
+	public double[][] rz;
+	public double[][] matProj = {{1,0,0},{0,1,0}};
+	public double[][] matTransla3d = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
+	public double[][] listevecteurs;
 
 	public Matrices(){
 		this.init();
@@ -25,23 +25,35 @@ public class Matrices{
 	}
 
 	public void Rotx(double angle){
-		this.rx = new double[][] { {1,0,0}, {0, Math.cos(angle), -Math.sin(angle)}, {0, -Math.sin(angle), Math.cos(angle)} };
+		this.rx = new double[][] {
+																{1,0,0},
+																{0, Math.cos(angle), -Math.sin(angle)},
+																{0, Math.sin(angle), Math.cos(angle)}
+															};
 		for(int i = 0; i < listevecteurs.length; i++){
-			matmulv(this.rx,this.listevecteurs[i]);
+			this.listevecteurs[i] = matmulv(this.rx,this.listevecteurs[i]);
 		}
 	}
 
 	public void Roty(double angle){
-		this.ry = new double[][] { {Math.cos(angle),0,Math.sin(angle)}, {0, 1, 0}, {-Math.sin(angle), 0,  Math.cos(angle)} };
+		this.ry = new double[][] {
+																{Math.cos(angle),0,Math.sin(angle)},
+																{0, 1, 0},
+																{-Math.sin(angle), 0,  Math.cos(angle)}
+															};
 		for(int i = 0; i < listevecteurs.length; i++){
-			matmulv(this.ry,this.listevecteurs[i]);
+			this.listevecteurs[i] = matmulv(this.ry,this.listevecteurs[i]);
 		}
 	}
 
 	public void Rotz(double angle){
-		this.rz = new double[][] { {Math.cos(angle),-Math.sin(angle),0}, {Math.sin(angle),Math.cos(angle),0}, {0, 0, 1} };
+		this.rz = new double[][] {
+			{Math.cos(angle),-Math.sin(angle),0},
+			{Math.sin(angle),Math.cos(angle),0},
+			{0, 0, 1}
+		};
 		for(int i = 0; i < listevecteurs.length; i++){
-			matmulv(this.rz,this.listevecteurs[i]);
+			this.listevecteurs[i] = matmulv(this.rz,this.listevecteurs[i]);
 		}
 	}
 
@@ -81,7 +93,7 @@ public class Matrices{
 		return matrice;
 	}
 
-	public static int countLinesFrom(String filename) throws IOException {
+	public int countLinesFrom(String filename) throws IOException {
 	    InputStream is = new BufferedInputStream(new FileInputStream(filename));
 	    try {
 	        byte[] c = new byte[1024];
@@ -172,20 +184,29 @@ public class Matrices{
 		}
 		return res;
 	}
+	public double getPointX(int pos){
 
-	public double[][] matmulv(double[][] mat1, double vect[]){
+		return (matmulv(this.matProj, this.listevecteurs[pos])[0]);
+	}
+	public double getPointy(int pos){
+		return (matmulv(this.matProj, this.listevecteurs[pos])[1]);
+	}
+	public double[] matmulv(double[][] mat1, double vect[]){
 		int y1,x2;
-		y1 = mat1.length;
+		y1 = mat1[0].length;
 		x2 = vect.length;
-		double[][] res = new double[y1][x2];
+		//System.out.println(y1 + " == " + x2);
+		double[] res = new double[mat1[0].length];
 		double temp;
 		if(y1 == x2){
-			for(int i = 0; i < x2; i++){
-				for(int j = 0; j < y1; j++){
+			for(int i = 0; i < mat1.length; i++){
+				//for(int j = 0; j < y1; j++){
 					for(int k = 0; k < x2; k++){
-						res[i][j] += mat1[i][k] * vect[k];
+						//System.out.println("matrice 1 : " + mat1[i][k] + " vecteur : " + vect[k]);
+						//System.out.println("i " + i + " k " + k);
+						res[i] += mat1[i][k] * vect[k];
 					}
-				}
+			//	}
 			}
 		}
 		return res;
