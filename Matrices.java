@@ -9,12 +9,13 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 public class Matrices{
-	public double[][] rx;
-	public double[][] ry;
-	public double[][] rz;
-	public double[][] matProj = {{1,0,0},{0,1,0}};
-	public double[][] matTransla3d = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
+
+	/* TODO : passer de la projection orthogonale a la projection avec perspective */
+
 	public double[][] listevecteurs;
+	public static double[][] listevecteursPosBase;
+	public double[][] matPosCam;
+	public double[][] matOriCam;
 
 	public Matrices(){
 		this.init();
@@ -22,65 +23,6 @@ public class Matrices{
 
 	public void init(){
 		this.readVect();
-	}
-
-	public void Rotx(double angle){
-		this.rx = new double[][] {
-																{1,0,0},
-																{0, Math.cos(angle), -Math.sin(angle)},
-																{0, Math.sin(angle), Math.cos(angle)}
-															};
-		for(int i = 0; i < listevecteurs.length; i++){
-			this.listevecteurs[i] = matmulv(this.rx,this.listevecteurs[i]);
-		}
-	}
-
-	public void Roty(double angle){
-		this.ry = new double[][] {
-																{Math.cos(angle),0,Math.sin(angle)},
-																{0, 1, 0},
-																{-Math.sin(angle), 0,  Math.cos(angle)}
-															};
-		for(int i = 0; i < listevecteurs.length; i++){
-			this.listevecteurs[i] = matmulv(this.ry,this.listevecteurs[i]);
-		}
-	}
-
-	public void Rotz(double angle){
-		this.rz = new double[][] {
-			{Math.cos(angle),-Math.sin(angle),0},
-			{Math.sin(angle),Math.cos(angle),0},
-			{0, 0, 1}
-		};
-		for(int i = 0; i < listevecteurs.length; i++){
-			this.listevecteurs[i] = matmulv(this.rz,this.listevecteurs[i]);
-		}
-	}
-
-	public void translateX(double depl, double[][] vecteur){
-		this.matTransla3d[0][3] = depl;
-		matmul(this.matTransla3d,vecteur);
-		this.matTransla3d[0][3] = 0;
-	}
-	public void translateY(double depl, double[][] vecteur){
-		this.matTransla3d[1][3] = depl;
-		matmul(this.matTransla3d,vecteur);
-		this.matTransla3d[1][3] = 0;
-	}
-	public void translateZ(double depl, double[][] vecteur){
-		this.matTransla3d[2][3] = depl;
-		matmul(this.matTransla3d,vecteur);
-		this.matTransla3d[2][3] = 0;
-	}
-	public void affMat(double[][] matrice) {
-		String s = "";
-		for(int y = 0; y < matrice.length; y++){
-			for(int x = 0; x < matrice[0].length; x++){
-				s += "["+ matrice[y][x] + "]\t";
-			}
-			s += "\n";
-		}
-		System.out.println(s);
 	}
 
 	public double[][] matRand(int x, int y){
@@ -136,6 +78,7 @@ public class Matrices{
 		try{
 			File file = new File("/iutv/Mes_Montages/11701691/S3/pourletravail/projection/Vecteurs/posVecteurs.txt");
 			int nbvect = countLinesFrom("/iutv/Mes_Montages/11701691/S3/pourletravail/projection/Vecteurs/posVecteurs.txt");
+			this.listevecteursPosBase = new double[nbvect][3];
 			this.listevecteurs = new double[nbvect][3];
 			Scanner sc = new Scanner(file);
 			int i = 0;
@@ -147,9 +90,12 @@ public class Matrices{
     		try{
         	if(info.length == 3)
         	{
-            this.listevecteurs[i][0] = Double.parseDouble(info[0]);
-            this.listevecteurs[i][1] = Double.parseDouble(info[1]);
-            this.listevecteurs[i][2] = Double.parseDouble(info[2]);
+						this.listevecteursPosBase[i][0] = Double.parseDouble(info[0]);
+						this.listevecteursPosBase[i][1] = Double.parseDouble(info[1]);
+						this.listevecteursPosBase[i][2] = Double.parseDouble(info[2]);
+						this.listevecteurs[i][0] = Double.parseDouble(info[0]);
+						this.listevecteurs[i][1] = Double.parseDouble(info[1]);
+						this.listevecteurs[i][2] = Double.parseDouble(info[2]);
             i++;
         	}
         	else
@@ -167,49 +113,12 @@ public class Matrices{
 		}
 	}
 
-	public double[][] matmul(double[][] mat1, double mat2[][]){
-		int y1,x2;
-		y1 = mat1.length;
-		x2 = mat2[0].length;
-		double[][] res = new double[y1][x2];
-		double temp;
-		if(y1 == x2){
-			for(int i = 0; i < x2; i++){
-				for(int j = 0; j < y1; j++){
-					for(int k = 0; k < x2; k++){
-						res[i][j] += mat1[i][k] * mat2[k][j];
-					}
-				}
-			}
-		}
-		return res;
-	}
-	public double getPointX(int pos){
 
-		return (matmulv(this.matProj, this.listevecteurs[pos])[0]);
+	public double getPointX(int pos){
+		return (OpeMatrices.matmulv(OpeMatrices.matProj, this.listevecteurs[pos])[0]);
 	}
 	public double getPointy(int pos){
-		return (matmulv(this.matProj, this.listevecteurs[pos])[1]);
-	}
-	public double[] matmulv(double[][] mat1, double vect[]){
-		int y1,x2;
-		y1 = mat1[0].length;
-		x2 = vect.length;
-		//System.out.println(y1 + " == " + x2);
-		double[] res = new double[mat1[0].length];
-		double temp;
-		if(y1 == x2){
-			for(int i = 0; i < mat1.length; i++){
-				//for(int j = 0; j < y1; j++){
-					for(int k = 0; k < x2; k++){
-						//System.out.println("matrice 1 : " + mat1[i][k] + " vecteur : " + vect[k]);
-						//System.out.println("i " + i + " k " + k);
-						res[i] += mat1[i][k] * vect[k];
-					}
-			//	}
-			}
-		}
-		return res;
+		return (OpeMatrices.matmulv(OpeMatrices.matProj, this.listevecteurs[pos])[1]);
 	}
 }
 
