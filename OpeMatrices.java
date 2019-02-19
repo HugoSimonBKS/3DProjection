@@ -1,9 +1,10 @@
+import java.lang.Object;
 public final class OpeMatrices{
 
   private static double[][] rx;
 	private static double[][] ry;
 	private static double[][] rz;
-  private static double[][] matTransla3d = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
+  private static double[][] matTransla3d = {{1,0,0},{0,1,0},{0,0,1}};
   public static double[][] matProj = {{1,0,0},{0,1,0}};
 
   public static double[][] Rotx(double[][] listevecteurs, double angle){
@@ -51,22 +52,34 @@ public final class OpeMatrices{
     return listev;
   }
 
-  public static void translateX(double depl, double[][] vecteur){
-    OpeMatrices.matTransla3d[0][3] = depl;
-    matmul(OpeMatrices.matTransla3d,vecteur);
-    OpeMatrices.matTransla3d[0][3] = 0;
+  public static double[][] translateX(double[][] vecteur, double depl){
+    double[][] vectClone = new double[vecteur.length][3];
+    OpeMatrices.matTransla3d[0][2] = depl;
+    for(int i = 0; i < vecteur.length; i++){
+      vectClone[i] = matmulv(OpeMatrices.matTransla3d,vecteur[i]);
+    }
+    OpeMatrices.matTransla3d[0][2] = 0;
+    return vectClone;
   }
 
-  public static void translateY(double depl, double[][] vecteur){
-    OpeMatrices.matTransla3d[1][3] = depl;
-    matmul(OpeMatrices.matTransla3d,vecteur);
-    OpeMatrices.matTransla3d[1][3] = 0;
+  public static double[][] translateY(double[][] vecteur, double depl){
+    double[][] vectClone = new double[vecteur.length][3];
+    OpeMatrices.matTransla3d[1][2] = depl;
+    for(int i = 0; i < vecteur.length; i++){
+      vectClone[i] = matmulv(OpeMatrices.matTransla3d,vecteur[i]);
+    }
+    OpeMatrices.matTransla3d[1][2] = 0;
+    return vectClone;
   }
 
-  public static void translateZ(double depl, double[][] vecteur){
-    OpeMatrices.matTransla3d[2][3] = depl;
-    matmul(OpeMatrices.matTransla3d,vecteur);
-    OpeMatrices.matTransla3d[2][3] = 0;
+  public static double[][] translateZ(double[][] vecteur, double depl){
+    double[][] vectClone = new double[vecteur.length][3];
+    OpeMatrices.matTransla3d[2][2] = depl;
+    for(int i = 0; i < vecteur.length; i++){
+      vectClone[i] = matmulv(OpeMatrices.matTransla3d,vecteur[i]);
+    }
+    OpeMatrices.matTransla3d[2][2] = 0;
+    return vectClone;
   }
 
   public static void affMat(double[][] matrice) {
@@ -113,27 +126,45 @@ public final class OpeMatrices{
     }
     return res;
   }
-}
 
-public static double[][] ROTATE(double[][]listevecteurs, double xAngle, double yAngle, double zAngle){
-  listev = new double[listevecteurs.length][3];
-  if(xAngle != 0)
-    listev = OpeMatrices.Rotx(listevecteurs, this.angle);
-  if(yAngle != 0)
-    listev = OpeMatrices.Roty(listev,this.angle);
-  if(zAngle != 0)
-    listev = OpeMatrices.Rotz(listev,this.angle);
-
-  return listev
-}
-public static double[][] TRANSLATE(double[][]listevecteurs, double xVal, double yVal, double zVal){
-  listev = new double[listevecteurs.length][3];
-  if(xVal != 0)
-    listev = OpeMatrices.translateX(listevecteurs, this.angle);
-  if(yVal != 0)
-    listev = OpeMatrices.translateY(listev,this.angle);
-  if(zVal != 0)
-    listev = OpeMatrices.translateZ(listev,this.angle);
-
-  return listev
+  public static double[][] ROTATE(double[][]listevecteurs, double xAngle, double yAngle, double zAngle){
+    double[][] listev = new double[listevecteurs.length][3];
+    if(xAngle != 0){
+      listev = OpeMatrices.Rotx(listevecteurs, xAngle);
+    }
+    if(yAngle != 0){
+      if(listev[0][0] == 0.0)
+        listev = OpeMatrices.Roty(listevecteurs, yAngle);
+      else
+        listev = OpeMatrices.Roty(listev, yAngle);
+    }
+    if(zAngle != 0){
+      if(listev[0][0] == 0.0){
+        listev = OpeMatrices.Rotz(listevecteurs, zAngle);
+      }
+      else
+        listev = OpeMatrices.Rotz(listev, zAngle);
+    }
+    return listev;
+  }
+  public static double[][] TRANSLATE(double[][]listevecteurs, double xVal, double yVal, double zVal){
+    double[][] listev = new double[listevecteurs.length][3];
+    if(xVal != 0){
+      listev = OpeMatrices.translateX(listevecteurs, xVal);
+    }
+    if(yVal != 0){
+      if(listev[0][0] == 0.0)
+        listev = OpeMatrices.translateY(listevecteurs, yVal);
+      else
+        listev = OpeMatrices.translateY(listev, yVal);
+    }
+    if(zVal != 0){
+      if(listev[0][0] == 0.0){
+        listev = OpeMatrices.translateZ(listevecteurs, zVal);
+      }
+      else
+        listev = OpeMatrices.translateZ(listev, zVal);
+    }
+    return listev;
+  }
 }

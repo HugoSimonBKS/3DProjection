@@ -10,7 +10,9 @@ import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 public class Matrices{
 
-	/* TODO : passer de la projection orthogonale a la projection avec perspective */
+	/* TODO : passer de la projection orthogonale a la projection avec perspective
+						et trouver une solution pour la transition de matrices
+	 */
 
 	public double[][] listevecteurs;
 	public static double[][] listevecteursPosBase;

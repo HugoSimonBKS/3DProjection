@@ -11,7 +11,7 @@ public class InterfaceGraphique extends JComponent {
   private Graphics2D grafikse;
   private Matrices mat;
   private double angle = 0.0;
-  private double
+  private double deplacement = 0.0;
   public InterfaceGraphique(Matrices m){
     this.mat = m;
     setDoubleBuffered(false);
@@ -33,19 +33,15 @@ public class InterfaceGraphique extends JComponent {
     grafikse.setPaint(Color.white);
     grafikse.fillRect(0, 0, getSize().width, getSize().height);
     grafikse.setPaint(Color.black);
-    for(int i = 0; i < 8; i++){
-      //System.out.println("point x du vecteur " + i + " : " + mat.getPointX(i) + " point y : "  + (mat.getPointy(i)));
+    for(int i = 0; i < Matrices.listevecteursPosBase.length; i++){
       Ellipse2D.Double circle = new Ellipse2D.Double((mat.getPointX(i)+250.0),(mat.getPointy(i)+250.0),5.0,5.0);
       grafikse.fill(circle);
       repaint();
     }
     this.angle += 0.01;
-
     System.out.println("angle : " + this.angle);
     System.out.println("listevecteursPosBase : ");
     OpeMatrices.affMat(mat.listevecteursPosBase);
-    mat.listevecteurs = OpeMatrices.Rotx(mat.listevecteursPosBase, this.angle);
-    mat.listevecteurs = OpeMatrices.Roty(mat.listevecteurs,this.angle);
-    mat.listevecteurs = OpeMatrices.Rotz(mat.listevecteurs,this.angle);
+    mat.listevecteurs = OpeMatrices.ROTATE(mat.listevecteursPosBase, angle, angle, 0);
   }
 }
